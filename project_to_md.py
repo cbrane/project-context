@@ -12,6 +12,22 @@ except ImportError:
     sys.exit(1)
 
 
+def count_tokens(text: str) -> int:
+    """
+    Count tokens in the text. This function tries to use tiktoken for accurate token counting.
+    If tiktoken is not available, it falls back to a simple whitespace-based count.
+    """
+    try:
+        import tiktoken
+        # Using the encoding for a common model; adjust if needed.
+        encoding = tiktoken.get_encoding("cl100k_base")
+        tokens = encoding.encode(text)
+        return len(tokens)
+    except Exception:
+        # Fallback: approximate token count by splitting on whitespace.
+        return len(text.split())
+
+
 def load_gitignore_patterns(gitignore_path: str):
     """
     Load the .gitignore patterns using pathspec.
@@ -133,7 +149,7 @@ def gather_file_contents(tree: dict, parent_path: str) -> str:
                 except Exception as e:
                     file_text = f"Could not read file: {e}"
 
-                # Pick a language for fenced code blocks
+                # Pick a language for fenced code blocks based on file extension.
                 extension = os.path.splitext(name)[1].lower()
                 fence_lang = {
                     ".py": "python",
@@ -174,10 +190,14 @@ def main():
     # Wrap the markdown output in XML <project> tags
     final_markdown = f"<project>\n{final_markdown}\n</project>\n"
 
+    # Count tokens in the final markdown output
+    token_count = count_tokens(final_markdown)
+
     # Copy to clipboard using pbcopy
     subprocess.run(["pbcopy"], input=final_markdown, text=True)
 
     print("Project has been converted to Markdown (wrapped in <project> tags) and copied to your clipboard.")
+    print(f"Total tokens in output: {token_count}")
 
 
 if __name__ == "__main__":

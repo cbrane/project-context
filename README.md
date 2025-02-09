@@ -10,7 +10,7 @@ This project contains a script that recursively converts your project structure 
   The script walks through your project directory recursively, building a tree structure while applying `.gitignore` rules.
 
 - **File Processing:**  
-  - **Text Files:** Their contents are rendered in fenced code blocks with syntax highlighting based on file extension.
+  - **Text Files:** Their contents are rendered in fenced code blocks with syntax highlighting based on file extension.  
   - **Binary Files:** The script notes that these files are binary and does not include their content.
 
 - **XML Tag Wrapping:**  
@@ -18,6 +18,9 @@ This project contains a script that recursively converts your project structure 
 
 - **Clipboard Integration:**  
   The final Markdown is copied to your clipboard using `pbcopy` for easy pasting elsewhere.
+
+- **Token Counting:**  
+  After wrapping the Markdown output in `<project>` tags, the script counts the total number of tokens in the document (using `tiktoken` if available, or a fallback method) and prints the token count to the console. This helps you understand how much context is being passed to your LLM.
 
 ## Setup Instructions
 
@@ -115,6 +118,4 @@ After setting up, simply navigate to any project folder and run:
 project_to_md.py
 ```
 
-The script will generate a Markdown representation of your project (wrapped in `<project>` XML tags) and copy it to your clipboard.
-
-Happy coding!
+The script will generate a Markdown representation of your project (wrapped in `<project>` XML tags), count the total number of tokens in the output, and copy the Markdown to your clipboard.
